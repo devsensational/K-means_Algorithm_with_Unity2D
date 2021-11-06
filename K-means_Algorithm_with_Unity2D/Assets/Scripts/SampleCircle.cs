@@ -7,10 +7,13 @@ public class SampleCircle : MonoBehaviour
     [SerializeField] int x, y;
     int maxWidth, maxHeight;
     GameObject p;
+    SpriteRenderer render;
+    int clusterNum;
     
     void Start()
     {
         p = transform.parent.gameObject;
+        render = GetComponent<SpriteRenderer>();
         maxWidth = p.GetComponent<Algorithm_Manager>().getMaxWidth();
         maxHeight = p.GetComponent<Algorithm_Manager>().getMaxHeight();
         x = Random.Range(0, maxWidth);
@@ -23,15 +26,23 @@ public class SampleCircle : MonoBehaviour
         
     }
 
-    public void setRGB(int _R, int _G, int _B)
+    public void setColor(Color _color)
     {
-        R = _R;
-        G = _G;
-        B = _B;
+        render.color = _color;
     }
 
     public void setPosition()
     {
         transform.position = new Vector3(x, y);
+    }
+
+    public void setCluster(int num)
+    {
+        clusterNum = num;
+    }
+
+    public int getClusterNum()
+    {
+        return clusterNum;
     }
 }

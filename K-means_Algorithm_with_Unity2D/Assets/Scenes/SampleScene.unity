@@ -223,7 +223,9 @@ MonoBehaviour:
   maxWidth: 30
   maxHeight: 20
   samplePrefab: {fileID: 953588206224534229, guid: 94faf3dea9e982e4b92384c1c02d7a39, type: 3}
-  Associate: {fileID: 6155638538968001061, guid: c792f37f0cf53954692835f6cf9ae297, type: 3}
+  cluster: {fileID: 6155638538968001061, guid: c792f37f0cf53954692835f6cf9ae297, type: 3}
+  clusterGroup: {fileID: 772454840}
+  sampleGroup: {fileID: 1713287251}
 --- !u!4 &256690165
 Transform:
   m_ObjectHideFlags: 0
@@ -714,6 +716,36 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &772454840
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 772454841}
+  m_Layer: 0
+  m_Name: ClusterGroup
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &772454841
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 772454840}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &866622359
 GameObject:
   m_ObjectHideFlags: 0
@@ -876,13 +908,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 256690163}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
+      - m_Target: {fileID: 256690164}
+        m_TargetAssemblyTypeName: Algorithm_Manager, Assembly-CSharp
+        m_MethodName: startAlgorithm
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
