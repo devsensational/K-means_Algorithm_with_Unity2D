@@ -13,8 +13,10 @@ public class Algorithm_Manager : MonoBehaviour
     [SerializeField] GameObject clusterGroup;
     [SerializeField] GameObject sampleGroup;
 
-    private ArrayList sampleList = new ArrayList();
-    private ArrayList doList;
+    private List<Transform> sampleList = new List<Transform>();
+    private List<ListContainer> doList = new List<ListContainer>();
+    private int doNum = 0;
+    private double fValue = 0;
     Transform thisObject;
     bool isOver = false;
     bool[] isSame;
@@ -33,28 +35,32 @@ public class Algorithm_Manager : MonoBehaviour
 
     }
 
-    void Update()
-    {
-        
-    }
-
-    public int getMaxWidth()
-    {
-        return maxWidth;
-    }
-
-    public int getMaxHeight()
-    {
-        return maxHeight;
-    }
-
     public void startAlgorithm()
     {
+        for (int j = 0; j < kCount; j++)
+        {
+            Transform kPtr = clusterGroup.gameObject.transform.GetChild(j).gameObject.transform;
+            doList.Add(new ListContainer(j, kPtr.position));
+            doNum++;
+        }
         while (!isOver)
         {
             clusterAssociate();
             changeClusterPosition();
         }
+        for (int j = 0; j < kCount; j++)
+        {
+            Transform kPtr = clusterGroup.gameObject.transform.GetChild(j).gameObject.transform;
+            for (int i = 0; i < SampleCount; i++)
+            {
+                Transform sPtr = gameObject.transform.GetChild(i).gameObject.transform;
+                if (j == sPtr.GetComponent<SampleCircle>().getClusterNum())
+                {
+                    fValue += Vector3.Distance(sPtr.position, kPtr.position);
+                }
+            }
+        }
+        Debug.Log("목적함수 값 = " + fValue);
     }
     
     private void clusterAssociate()
@@ -98,7 +104,12 @@ public class Algorithm_Manager : MonoBehaviour
             {
                 isSame[j] = true;
             }
-            kPtr.position = new Vector3(cPositonX.Average(), cPositonY.Average());
+            else
+            {
+                kPtr.position = new Vector3(cPositonX.Average(), cPositonY.Average());
+                doList.Add(new ListContainer(j, kPtr.position));
+                doNum++;
+            }
         }
         for(int i = 0; i < kCount; i++)
         {
@@ -107,4 +118,117 @@ public class Algorithm_Manager : MonoBehaviour
         }
         isOver = true;
     }
+
+
+    public void ClickOnUndo()
+    {
+        if (doNum > 0)
+        {
+            doNum--;
+            controlCluster();
+        }
+    }
+    public void ClickOnNext()
+    {
+        if (doNum < doList.Count - 1)
+        {
+            doNum++;
+            controlCluster();
+        }
+
+    }
+
+    public void ClickOnMedoids()
+    {
+        for (int j = 0; j < kCount; j++)
+        {
+            Transform kPtr = clusterGroup.gameObject.transform.GetChild(j).gameObject.transform;
+            doList.Add(new ListContainer(j, kPtr.position));
+            doNum++;
+        }
+        while (!isOver)
+        {
+            clusterAssociate();
+            medoidsAlgorithm();
+        }
+        for (int j = 0; j < kCount; j++)
+        {
+            Transform kPtr = clusterGroup.gameObject.transform.GetChild(j).gameObject.transform;
+            for (int i = 0; i < SampleCount; i++)
+            {
+                Transform sPtr = gameObject.transform.GetChild(i).gameObject.transform;
+                if (j == sPtr.GetComponent<SampleCircle>().getClusterNum())
+                {
+                    fValue += Vector3.Distance(sPtr.position, kPtr.position);
+                }
+            }
+        }
+        Debug.Log("목적함수 값 = " + fValue);
+    }
+
+    private void controlCluster()
+    {
+        int childNum = doList[doNum].getClusterNum();
+        Transform kPtr = clusterGroup.gameObject.transform.GetChild(childNum).gameObject.transform;
+        kPtr.position = doList[doNum].getClusterPosition();
+        clusterAssociate();
+        Debug.Log(doNum);
+    }
+
+    private void medoidsAlgorithm()
+    {
+        for (int j = 0; j < kCount; j++)
+        {
+            double minDist = maxHeight + maxWidth;
+            Transform kPtr = clusterGroup.gameObject.transform.GetChild(j).gameObject.transform;
+            for (int i = 0; i < SampleCount; i++)
+            {
+                Transform sPtr = gameObject.transform.GetChild(i).gameObject.transform;
+                double dist = 0;
+                int cnt = 0;
+                for (int k = 0; k < SampleCount; k++)
+                {
+                    Transform cPtr = gameObject.transform.GetChild(k).gameObject.transform;
+                    if(j == sPtr.GetComponent<SampleCircle>().getClusterNum())
+                    {
+                        if (cPtr.GetComponent<SampleCircle>().getClusterNum() == sPtr.GetComponent<SampleCircle>().getClusterNum())
+                        {
+                            dist += Vector3.Distance(cPtr.position, sPtr.position);
+                            cnt++;
+                        }
+                    }
+                }
+                dist = dist / cnt;
+                if (dist < minDist)
+                {
+                    kPtr.position = sPtr.position;
+                    minDist = dist;
+                }
+                if (dist == minDist)
+                {
+                    if (kPtr.position == sPtr.position)
+                    {
+                        isSame[j] = true;
+                    }
+                }
+            }
+
+        }
+        for (int i = 0; i < kCount; i++)
+        {
+            if (isSame[i] == false)
+                return;
+        }
+        isOver = true;
+    }
+    public int getMaxWidth()
+    {
+        return maxWidth;
+    }
+
+    public int getMaxHeight()
+    {
+        return maxHeight;
+    }
+
 }
